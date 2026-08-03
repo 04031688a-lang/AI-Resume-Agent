@@ -23,10 +23,77 @@
 ## 文档
 
 - [软件需求规格说明书](docs/requirement.md)
+- [数据库建表脚本](docs/sql/schema.sql)
+
+## 项目结构
+
+```
+AI-Resume-Agent/
+├── backend/          # Spring Boot 后端
+│   └── src/main/
+│       ├── java/com/ai/resumeagent/
+│       │   ├── common/      # 统一响应与全局异常
+│       │   ├── config/      # Security / MyBatis-Plus 配置
+│       │   ├── controller/  # 接口层
+│       │   ├── dto/         # 请求/响应对象
+│       │   ├── entity/      # 实体
+│       │   ├── mapper/      # MyBatis-Plus Mapper
+│       │   ├── security/    # JWT 鉴权
+│       │   └── service/     # 业务层
+│       └── resources/       # 配置文件（敏感配置不提交）
+├── frontend/         # Vue3 前端
+│   └── src/
+│       ├── api/       # Axios 封装与接口
+│       ├── router/    # 路由
+│       ├── stores/    # Pinia 状态
+│       ├── utils/     # 工具
+│       └── views/     # 页面
+└── docs/             # 需求文档与 SQL
+```
 
 ## 快速开始
 
-> 开发中，待 M1 阶段补充。
+### 环境要求
+
+- JDK 17+ / Maven 3.9+
+- Node.js 18+ / npm
+- MySQL 8.x
+
+### 1. 初始化数据库
+
+```bash
+mysql -u root -p < docs/sql/schema.sql
+```
+
+### 2. 启动后端
+
+```bash
+cd backend
+# 复制配置模板并修改数据库密码等本地配置
+copy src/main/resources/application-example.yml src/main/resources/application-dev.yml
+mvn spring-boot:run
+```
+
+后端默认运行在 `http://localhost:8080`，API 前缀为 `/api/v1`。
+
+### 3. 启动前端
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+前端默认运行在 `http://localhost:5173`，已配置 `/api` 代理转发到后端。
+
+## 当前进度
+
+- [x] M1 项目初始化：前后端脚手架、数据库建表、统一响应与异常处理、JWT 注册登录
+- [ ] M2 简历模块：简历上传与解析、AI 分析
+- [ ] M3 岗位匹配
+- [ ] M4 模拟面试
+- [ ] M5 项目优化 + 管理后台
+- [ ] M6 测试与上线
 
 ---
 

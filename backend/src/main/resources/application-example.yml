@@ -1,0 +1,39 @@
+# ============================================================
+# 配置文件示例（可提交到仓库）
+# 使用方式：复制为 application.yml（或 application-{profile}.yml）
+# 并替换其中的占位值；真实密钥/密码请通过环境变量注入：
+#   DB_URL / DB_USERNAME / DB_PASSWORD / JWT_SECRET
+# ============================================================
+server:
+  port: 8080
+
+spring:
+  application:
+    name: resume-agent-backend
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL:jdbc:mysql://localhost:3306/ai_resume_agent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+
+jwt:
+  # 生产环境必须通过 JWT_SECRET 环境变量覆盖
+  secret: ${JWT_SECRET:change-me-to-a-long-random-string-at-least-32-chars}
+  expiration: 7200
+
+# DeepSeek API（M2 阶段启用，生产环境通过环境变量注入）
+# deepseek:
+#   api-key: ${DEEPSEEK_API_KEY:}
+#   base-url: https://api.deepseek.com
+#   model: deepseek-chat
