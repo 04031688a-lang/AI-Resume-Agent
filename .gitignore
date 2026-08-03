@@ -1,0 +1,62 @@
+# ========== 环境配置与密钥（禁止上传） ==========
+# 前端环境变量：忽略所有 .env 文件，仅允许提交示例模板
+.env
+.env.*
+!.env.example
+
+# Spring Boot 环境配置：忽略环境相关配置，仅允许提交示例模板
+application*.yml
+application*.yaml
+!application-example.yml
+!application-example.yaml
+*.yml.bak
+*.yaml.bak
+
+# API 密钥 / 凭据 / 证书
+*secret*
+*credential*
+*.pem
+*.p12
+*.jks
+*.key
+*.keystore
+.aws/
+.ssh/
+
+# ========== 依赖与构建产物 ==========
+node_modules/
+dist/
+build/
+target/
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+
+# ========== IDE 与编辑器 ==========
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# ========== 操作系统 ==========
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========== 日志与临时文件 ==========
+*.log
+logs/
+*.tmp
+*.temp
+data/
+temp/
+
+# ========== Python（工具脚本） ==========
+__pycache__/
+*.pyc
+venv/
+.venv/
+env/
