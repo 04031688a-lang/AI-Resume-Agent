@@ -30,6 +30,16 @@ const routes = [
     component: () => import('@/views/JobsView.vue')
   },
   {
+    path: '/interviews',
+    name: 'Interviews',
+    component: () => import('@/views/InterviewListView.vue')
+  },
+  {
+    path: '/interviews/:id',
+    name: 'InterviewChat',
+    component: () => import('@/views/InterviewChatView.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/'
   }
