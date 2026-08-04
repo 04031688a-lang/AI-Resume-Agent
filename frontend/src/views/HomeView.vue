@@ -59,7 +59,7 @@ const userStore = useUserStore()
 
 const features = [
   { icon: '📄', title: '简历分析', description: '上传简历，AI 生成评分与改进建议', to: '/resumes' },
-  { icon: '🎯', title: '岗位匹配', description: '查看岗位匹配度与技能差距' },
+  { icon: '🎯', title: '岗位匹配', description: '查看岗位匹配度与技能差距', to: '/jobs' },
   { icon: '🎤', title: 'AI 模拟面试', description: '多轮问答训练，生成面试报告' },
   { icon: '✨', title: '项目经历优化', description: '按 STAR 法则改写项目描述' }
 ]

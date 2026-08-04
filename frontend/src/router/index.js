@@ -25,6 +25,11 @@ const routes = [
     component: () => import('@/views/ResumeView.vue')
   },
   {
+    path: '/jobs',
+    name: 'Jobs',
+    component: () => import('@/views/JobsView.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/'
   }

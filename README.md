@@ -24,6 +24,7 @@
 
 - [软件需求规格说明书](docs/requirement.md)
 - [数据库建表脚本](docs/sql/schema.sql)
+- [示例岗位数据](docs/sql/seed_jobs.sql)
 
 ## 项目结构
 
@@ -63,6 +64,8 @@ AI-Resume-Agent/
 
 ```bash
 mysql -u root -p < docs/sql/schema.sql
+# 可选：导入示例岗位数据（开发演示用）
+mysql -u root -p < docs/sql/seed_jobs.sql
 ```
 
 ### 2. 启动后端
@@ -92,7 +95,7 @@ npm run dev
 
 - [x] M1 项目初始化：前后端脚手架、数据库建表、统一响应与异常处理、JWT 注册登录
 - [x] M2 简历模块：简历上传与解析（PDF/Word/TXT）、DeepSeek AI 分析报告
-- [ ] M3 岗位匹配
+- [x] M3 岗位匹配：岗位筛选分页、AI 匹配度/理由/技能差距、匹配历史
 - [ ] M4 模拟面试
 - [ ] M5 项目优化 + 管理后台
 - [ ] M6 测试与上线
