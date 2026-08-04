@@ -111,7 +111,39 @@ npm run dev
 - [x] M3 岗位匹配：岗位筛选分页、AI 匹配度/理由/技能差距、匹配历史
 - [x] M4 模拟面试：SSE 流式多轮问答、面试报告（评分/逐题点评/建议）
 - [x] M5 项目优化 + 管理后台：STAR 优化、用户/岗位管理、AI 配置、数据统计
-- [ ] M6 测试与上线
+- [x] M6 测试与上线：单元/集成测试、Docker 一键部署
+
+## 测试
+
+```bash
+cd backend
+mvn clean test
+```
+
+包含：JWT 工具单元测试、简历解析单元测试、注册/登录集成测试（连接本地 MySQL，事务回滚不落库）。
+
+## Docker 部署
+
+前置条件：安装 Docker Desktop（Windows）或 Docker Engine + Docker Compose。
+
+```bash
+# 一键启动 MySQL + 后端 + 前端
+docker compose up -d --build
+```
+
+首次启动会自动执行 `docs/sql/schema.sql`（建表）和 `docs/sql/seed_jobs.sql`（27 届秋招示例岗位）。
+
+常用环境变量（写入 `.env` 文件或直接传入）：
+
+| 变量 | 说明 | 默认值 |
+| --- | --- | --- |
+| `MYSQL_ROOT_PASSWORD` | MySQL root 密码 | `root123456` |
+| `JWT_SECRET` | JWT 密钥，生产必改 | 内置默认 |
+| `DEEPSEEK_API_KEY` | DeepSeek API Key | 空（未配置时 AI 功能提示错误） |
+
+访问 `http://localhost`（前端）、`http://localhost:8080`（后端 API）。
+
+> 后端容器不包含本地 `application-dev.yml`（该文件不入库），运行配置全部通过环境变量注入，见 `backend/src/main/resources/application-example.yml`。
 
 ---
 
