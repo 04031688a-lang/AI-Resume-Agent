@@ -24,6 +24,9 @@ public class InterviewSession {
     /** 关联岗位（可选） */
     private Long jobId;
 
+    /** 目标企业（不关联岗位时可直接填写，如：字节跳动） */
+    private String targetCompany;
+
     /** 类型：general/technical/behavioral */
     private String interviewType;
 

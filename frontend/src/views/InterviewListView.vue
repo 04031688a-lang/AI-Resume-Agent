@@ -36,6 +36,14 @@
                   />
                 </el-select>
               </el-form-item>
+              <el-form-item label="目标企业">
+                <el-input
+                  v-model="form.targetCompany"
+                  placeholder="选填，如：字节跳动（不选岗位时按企业真题风格出题）"
+                  clearable
+                  style="width: 320px"
+                />
+              </el-form-item>
               <el-form-item>
                 <el-button type="primary" :loading="creating" @click="handleCreate">
                   开始面试
@@ -99,7 +107,8 @@ const jobs = ref([])
 
 const form = ref({
   interviewType: 'general',
-  jobId: null
+  jobId: null,
+  targetCompany: ''
 })
 
 const typeLabels = {
@@ -136,7 +145,8 @@ async function handleCreate() {
   try {
     const res = await createInterview({
       interviewType: form.value.interviewType,
-      jobId: form.value.jobId || undefined
+      jobId: form.value.jobId || undefined,
+      targetCompany: form.value.targetCompany.trim() || undefined
     })
     ElMessage.success('面试已创建，第一个问题即将开始')
     router.push(`/interviews/${res.data.id}`)

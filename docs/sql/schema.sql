@@ -117,6 +117,7 @@ CREATE TABLE IF NOT EXISTS `interview_session` (
     `id`             BIGINT       NOT NULL AUTO_INCREMENT COMMENT '会话 ID',
     `user_id`        BIGINT       NOT NULL COMMENT '用户',
     `job_id`         BIGINT       DEFAULT NULL COMMENT '关联岗位（可选）',
+    `target_company` VARCHAR(100) DEFAULT NULL COMMENT '目标企业（不关联岗位时填写）',
     `interview_type` VARCHAR(50)  NOT NULL COMMENT '类型：general/technical/behavioral',
     `title`          VARCHAR(100) DEFAULT NULL COMMENT '会话标题',
     `status`         TINYINT      NOT NULL DEFAULT 0 COMMENT '0=进行中，1=已完成，2=已中断',

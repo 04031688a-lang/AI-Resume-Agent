@@ -16,5 +16,8 @@ public class CreateInterviewRequest {
     /** 关联岗位（可选） */
     private Long jobId;
 
+    /** 目标企业（可选，不关联岗位时直接填写企业名，如：字节跳动） */
+    private String targetCompany;
+
     private String title;
 }

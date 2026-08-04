@@ -46,6 +46,19 @@ public class InterviewServiceImpl implements InterviewService {
             "technical", "技术面试",
             "behavioral", "行为面试");
 
+    /**
+     * 目标企业真实面试风格参考（基于公开信息整理的考察特点，供 AI 出题参考）
+     */
+    private static final Map<String, String> COMPANY_STYLES = Map.of(
+            "字节", "字节跳动面试以算法题、系统设计与项目深挖著称，注重逻辑思维与工程落地，常考察高并发、缓存、消息队列等实际场景，近年新增 AI Agent 相关考察。",
+            "京东", "京东校招首次引入 AI 面试，技术面试注重业务理解与问题解决，常结合电商业务场景（秒杀、订单、物流调度）出题，也会考察对 AI 应用的思考。",
+            "拼多多", "拼多多面试以技术深度著称，算法和底层原理问得很细，喜欢连续追问「为什么」，注重对并发、分布式、中间件原理的深入理解。",
+            "阿里", "阿里面试注重技术深度与业务思考，常问项目亮点、技术难点与成长复盘，也会结合价值观场景题考察候选人。",
+            "腾讯", "腾讯面试注重基础与项目复盘，不同事业群风格差异较大，技术岗常问 C++/Go、算法与系统设计。",
+            "百度", "百度面试以算法和 AI 技术见长，机器学习相关岗位会深挖模型原理、公式推导与工程落地。",
+            "美团", "美团面试注重项目复盘、并发与分布式实践，常结合外卖、交易等业务场景出系统设计题。",
+            "米哈游", "米哈游技术面试结合游戏业务，常考察图形学、引擎、性能优化、玩法系统设计与产品理解。");
+
     private static final String FIRST_QUESTION_SYSTEM = """
             你是一名专业的 AI 模拟面试官。请根据面试类型与岗位要求，提出第一个面试问题。
             要求：只输出一个问题本身，不要任何点评或多余内容，使用简体中文。
@@ -97,10 +110,13 @@ public class InterviewServiceImpl implements InterviewService {
         InterviewSession session = new InterviewSession();
         session.setUserId(userId);
         session.setJobId(job == null ? null : job.getId());
+        session.setTargetCompany(resolveCompany(request, job));
         session.setInterviewType(type);
         session.setTitle(StringUtils.hasText(request.getTitle())
                 ? request.getTitle()
-                : (job == null ? TYPE_LABELS.get(type) : TYPE_LABELS.get(type) + " · " + job.getTitle()));
+                : TYPE_LABELS.get(type) + " · " + (job == null
+                    ? (StringUtils.hasText(session.getTargetCompany()) ? session.getTargetCompany() : "自由面试")
+                    : job.getTitle()));
         session.setStatus(0);
         session.setCurrentRound(1);
         sessionMapper.insert(session);
@@ -265,7 +281,30 @@ public class InterviewServiceImpl implements InterviewService {
             builder.append("岗位技能要求：").append(job.getSkills() == null ? "无" : job.getSkills()).append("\n");
             builder.append("岗位描述：").append(job.getJobDescription() == null ? "无" : job.getJobDescription()).append("\n");
         }
+        String company = job == null ? null : job.getCompany();
+        String style = findCompanyStyle(company);
+        if (style != null) {
+            builder.append("目标企业面试风格参考：").append(style).append("\n");
+        }
         return builder.toString();
+    }
+
+    private String resolveCompany(CreateInterviewRequest request, Job job) {
+        if (StringUtils.hasText(request.getTargetCompany())) {
+            return request.getTargetCompany().trim();
+        }
+        return job == null ? null : job.getCompany();
+    }
+
+    private String findCompanyStyle(String company) {
+        if (!StringUtils.hasText(company)) {
+            return null;
+        }
+        return COMPANY_STYLES.entrySet().stream()
+                .filter(entry -> company.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
     }
 
     private Map<Long, Job> loadJobs(List<InterviewSession> sessions) {
@@ -286,6 +325,7 @@ public class InterviewServiceImpl implements InterviewService {
                 .id(session.getId())
                 .jobId(session.getJobId())
                 .jobTitle(job == null ? null : job.getTitle())
+                .targetCompany(session.getTargetCompany())
                 .interviewType(session.getInterviewType())
                 .title(session.getTitle())
                 .status(session.getStatus())

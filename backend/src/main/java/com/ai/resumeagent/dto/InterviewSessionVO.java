@@ -18,6 +18,8 @@ public class InterviewSessionVO {
 
     private String jobTitle;
 
+    private String targetCompany;
+
     private String interviewType;
 
     private String title;
