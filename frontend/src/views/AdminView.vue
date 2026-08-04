@@ -426,15 +426,17 @@ async function handleSaveAiConfig() {
 }
 
 onMounted(() => {
-  if (userStore.userInfo?.role !== 1) {
-    ElMessage.error('无权访问管理后台')
-    router.push('/')
-    return
-  }
-  loadStats()
-  loadUsers()
-  loadJobs()
-  loadAiConfig()
+  userStore.fetchProfile().catch(() => {}).finally(() => {
+    if (userStore.userInfo?.role !== 1) {
+      ElMessage.error('无权访问管理后台')
+      router.push('/')
+      return
+    }
+    loadStats()
+    loadUsers()
+    loadJobs()
+    loadAiConfig()
+  })
 })
 </script>
 

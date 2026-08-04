@@ -4,6 +4,7 @@ import com.ai.resumeagent.common.Result;
 import com.ai.resumeagent.common.ResultCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,7 +35,14 @@ public class GlobalExceptionHandler {
         return Result.error(ResultCode.PARAM_ERROR, message);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Result<Void> handleNotReadableException(HttpMessageNotReadableException e) {
+        return Result.error(ResultCode.PARAM_ERROR, "请求体格式错误");
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public Result<Void> handleAccessDeniedException(AccessDeniedException e) {
         return Result.error(ResultCode.FORBIDDEN);
     }

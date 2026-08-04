@@ -48,6 +48,7 @@ desktop.ini
 
 # ========== 日志与临时文件 ==========
 *.log
+*.log.*
 logs/
 *.tmp
 *.temp

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ public class InterviewServiceImpl implements InterviewService {
     private final ObjectMapper objectMapper;
 
     @Override
+    @Transactional
     public InterviewSessionVO create(Long userId, CreateInterviewRequest request) {
         String type = request.getInterviewType();
         if (!TYPE_LABELS.containsKey(type)) {
