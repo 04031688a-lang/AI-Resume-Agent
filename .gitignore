@@ -53,6 +53,7 @@ logs/
 *.temp
 data/
 temp/
+uploads/
 
 # ========== Python（工具脚本） ==========
 __pycache__/

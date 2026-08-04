@@ -20,6 +20,11 @@ const routes = [
     component: () => import('@/views/HomeView.vue')
   },
   {
+    path: '/resumes',
+    name: 'Resumes',
+    component: () => import('@/views/ResumeView.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/'
   }

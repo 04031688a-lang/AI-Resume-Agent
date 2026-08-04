@@ -76,6 +76,8 @@ mvn spring-boot:run
 
 后端默认运行在 `http://localhost:8080`，API 前缀为 `/api/v1`。
 
+> **AI 分析需要配置 DeepSeek API Key**：在 `backend/src/main/resources/application-dev.yml` 中填写 `deepseek.api-key`，或设置环境变量 `DEEPSEEK_API_KEY`。未配置时，简历分析会返回明确提示，不影响其他功能。
+
 ### 3. 启动前端
 
 ```bash
@@ -89,7 +91,7 @@ npm run dev
 ## 当前进度
 
 - [x] M1 项目初始化：前后端脚手架、数据库建表、统一响应与异常处理、JWT 注册登录
-- [ ] M2 简历模块：简历上传与解析、AI 分析
+- [x] M2 简历模块：简历上传与解析（PDF/Word/TXT）、DeepSeek AI 分析报告
 - [ ] M3 岗位匹配
 - [ ] M4 模拟面试
 - [ ] M5 项目优化 + 管理后台

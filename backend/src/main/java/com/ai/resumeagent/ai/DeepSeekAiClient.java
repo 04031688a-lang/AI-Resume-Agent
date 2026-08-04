@@ -1,0 +1,85 @@
+package com.ai.resumeagent.ai;
+
+import com.ai.resumeagent.common.ResultCode;
+import com.ai.resumeagent.common.exception.BusinessException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClient;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * DeepSeek API 实现（OpenAI 兼容协议）
+ */
+@Slf4j
+@Service
+public class DeepSeekAiClient implements AiClient {
+
+    private final RestClient restClient;
+    private final ObjectMapper objectMapper;
+
+    @Value("${deepseek.api-key:}")
+    private String apiKey;
+
+    @Value("${deepseek.base-url:https://api.deepseek.com}")
+    private String baseUrl;
+
+    @Value("${deepseek.model:deepseek-chat}")
+    private String model;
+
+    public DeepSeekAiClient(RestClient.Builder restClientBuilder, ObjectMapper objectMapper) {
+        this.restClient = restClientBuilder.build();
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public String chat(String systemPrompt, String userPrompt) {
+        return chat(systemPrompt, userPrompt, 0.7);
+    }
+
+    @Override
+    public String chat(String systemPrompt, String userPrompt, double temperature) {
+        if (!StringUtils.hasText(apiKey)) {
+            throw new BusinessException(ResultCode.AI_SERVICE_ERROR,
+                    "未配置 DeepSeek API Key，请在本地配置或环境变量中设置 DEEPSEEK_API_KEY");
+        }
+
+        Map<String, Object> request = Map.of(
+                "model", model,
+                "messages", List.of(
+                        Map.of("role", "system", "content", systemPrompt),
+                        Map.of("role", "user", "content", userPrompt)
+                ),
+                "temperature", temperature
+        );
+
+        try {
+            String response = restClient.post()
+                    .uri(baseUrl + "/chat/completions")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(request))
+                    .retrieve()
+                    .body(String.class);
+
+            JsonNode root = objectMapper.readTree(response);
+            JsonNode choices = root.path("choices");
+            if (choices.isArray() && !choices.isEmpty()) {
+                return choices.get(0).path("message").path("content").asText();
+            }
+            throw new BusinessException(ResultCode.AI_SERVICE_ERROR, "AI 返回结果异常：" + root);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("DeepSeek API 调用失败", e);
+            throw new BusinessException(ResultCode.AI_SERVICE_ERROR, "AI 服务调用失败：" + e.getMessage());
+        }
+    }
+}

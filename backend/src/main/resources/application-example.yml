@@ -32,8 +32,12 @@ jwt:
   secret: ${JWT_SECRET:change-me-to-a-long-random-string-at-least-32-chars}
   expiration: 7200
 
-# DeepSeek API（M2 阶段启用，生产环境通过环境变量注入）
-# deepseek:
-#   api-key: ${DEEPSEEK_API_KEY:}
-#   base-url: https://api.deepseek.com
-#   model: deepseek-chat
+# 简历文件本地存储目录
+app:
+  upload-dir: ${UPLOAD_DIR:./uploads}
+
+# DeepSeek API（生产环境通过环境变量注入，勿在配置中写真实密钥）
+deepseek:
+  api-key: ${DEEPSEEK_API_KEY:}
+  base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+  model: ${DEEPSEEK_MODEL:deepseek-chat}
