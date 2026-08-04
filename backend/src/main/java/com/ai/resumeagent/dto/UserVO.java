@@ -31,4 +31,7 @@ public class UserVO {
     private String jobIntention;
 
     private Integer role;
+
+    /** 0=禁用，1=正常 */
+    private Integer status;
 }

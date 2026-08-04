@@ -91,6 +91,7 @@ public class UserServiceImpl implements UserService {
                 .graduationYear(user.getGraduationYear())
                 .jobIntention(user.getJobIntention())
                 .role(user.getRole())
+                .status(user.getStatus())
                 .build();
     }
 }

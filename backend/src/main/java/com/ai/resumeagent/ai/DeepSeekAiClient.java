@@ -2,6 +2,7 @@ package com.ai.resumeagent.ai;
 
 import com.ai.resumeagent.common.ResultCode;
 import com.ai.resumeagent.common.exception.BusinessException;
+import com.ai.resumeagent.service.AIConfigService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,19 +31,23 @@ public class DeepSeekAiClient implements AiClient {
 
     private final RestClient restClient;
     private final ObjectMapper objectMapper;
+    private final AIConfigService aiConfigService;
 
     @Value("${deepseek.api-key:}")
-    private String apiKey;
+    private String defaultApiKey;
 
     @Value("${deepseek.base-url:https://api.deepseek.com}")
-    private String baseUrl;
+    private String defaultBaseUrl;
 
     @Value("${deepseek.model:deepseek-chat}")
-    private String model;
+    private String defaultModel;
 
-    public DeepSeekAiClient(RestClient.Builder restClientBuilder, ObjectMapper objectMapper) {
+    public DeepSeekAiClient(RestClient.Builder restClientBuilder,
+                            ObjectMapper objectMapper,
+                            AIConfigService aiConfigService) {
         this.restClient = restClientBuilder.build();
         this.objectMapper = objectMapper;
+        this.aiConfigService = aiConfigService;
     }
 
     @Override
@@ -52,13 +57,14 @@ public class DeepSeekAiClient implements AiClient {
 
     @Override
     public String chat(String systemPrompt, String userPrompt, double temperature) {
+        String apiKey = resolveApiKey();
         if (!StringUtils.hasText(apiKey)) {
             throw new BusinessException(ResultCode.AI_SERVICE_ERROR,
                     "未配置 DeepSeek API Key，请在本地配置或环境变量中设置 DEEPSEEK_API_KEY");
         }
 
         Map<String, Object> request = Map.of(
-                "model", model,
+                "model", resolveModel(),
                 "messages", List.of(
                         Map.of("role", "system", "content", systemPrompt),
                         Map.of("role", "user", "content", userPrompt)
@@ -68,7 +74,7 @@ public class DeepSeekAiClient implements AiClient {
 
         try {
             String response = restClient.post()
-                    .uri(baseUrl + "/chat/completions")
+                    .uri(resolveBaseUrl() + "/chat/completions")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(objectMapper.writeValueAsString(request))
@@ -92,13 +98,14 @@ public class DeepSeekAiClient implements AiClient {
     @Override
     public void chatStream(String systemPrompt, String userPrompt, double temperature,
                            Consumer<String> onDelta) {
+        String apiKey = resolveApiKey();
         if (!StringUtils.hasText(apiKey)) {
             throw new BusinessException(ResultCode.AI_SERVICE_ERROR,
                     "未配置 DeepSeek API Key，请在本地配置或环境变量中设置 DEEPSEEK_API_KEY");
         }
 
         Map<String, Object> request = Map.of(
-                "model", model,
+                "model", resolveModel(),
                 "messages", List.of(
                         Map.of("role", "system", "content", systemPrompt),
                         Map.of("role", "user", "content", userPrompt)
@@ -109,7 +116,7 @@ public class DeepSeekAiClient implements AiClient {
 
         try {
             restClient.post()
-                    .uri(baseUrl + "/chat/completions")
+                    .uri(resolveBaseUrl() + "/chat/completions")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(objectMapper.writeValueAsString(request))
@@ -149,5 +156,20 @@ public class DeepSeekAiClient implements AiClient {
             }
         }
         return null;
+    }
+
+    private String resolveApiKey() {
+        String fromDb = aiConfigService.get("deepseek.api_key");
+        return StringUtils.hasText(fromDb) ? fromDb : defaultApiKey;
+    }
+
+    private String resolveModel() {
+        String fromDb = aiConfigService.get("deepseek.model");
+        return StringUtils.hasText(fromDb) ? fromDb : defaultModel;
+    }
+
+    private String resolveBaseUrl() {
+        String fromDb = aiConfigService.get("deepseek.base_url");
+        return StringUtils.hasText(fromDb) ? fromDb : defaultBaseUrl;
     }
 }

@@ -4,6 +4,7 @@ import com.ai.resumeagent.common.Result;
 import com.ai.resumeagent.dto.JobMatchVO;
 import com.ai.resumeagent.dto.JobQuery;
 import com.ai.resumeagent.dto.JobSaveRequest;
+import com.ai.resumeagent.dto.StatusRequest;
 import com.ai.resumeagent.dto.JobVO;
 import com.ai.resumeagent.dto.PageResult;
 import com.ai.resumeagent.security.UserContext;
@@ -64,6 +65,13 @@ public class JobController {
     @PreAuthorize("hasRole('ADMIN')")
     public Result<JobVO> update(@PathVariable Long id, @Valid @RequestBody JobSaveRequest request) {
         return Result.success(jobService.update(id, request));
+    }
+
+    @PutMapping("/jobs/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Result<Void> toggleStatus(@PathVariable Long id, @Valid @RequestBody StatusRequest request) {
+        jobService.toggleStatus(id, request.getStatus());
+        return Result.success();
     }
 
     @DeleteMapping("/jobs/{id}")

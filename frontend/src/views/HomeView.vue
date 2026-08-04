@@ -9,6 +9,7 @@
         </span>
         <template #dropdown>
           <el-dropdown-menu>
+            <el-dropdown-item v-if="userStore.userInfo?.role === 1" command="admin">管理后台</el-dropdown-item>
             <el-dropdown-item command="profile">个人信息</el-dropdown-item>
             <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -61,7 +62,7 @@ const features = [
   { icon: '📄', title: '简历分析', description: '上传简历，AI 生成评分与改进建议', to: '/resumes' },
   { icon: '🎯', title: '岗位匹配', description: '查看岗位匹配度与技能差距', to: '/jobs' },
   { icon: '🎤', title: 'AI 模拟面试', description: '多轮问答训练，生成面试报告', to: '/interviews' },
-  { icon: '✨', title: '项目经历优化', description: '按 STAR 法则改写项目描述' }
+  { icon: '✨', title: '项目经历优化', description: '按 STAR 法则改写项目描述', to: '/projects' }
 ]
 
 onMounted(() => {
@@ -75,6 +76,8 @@ async function handleCommand(command) {
     router.push('/login')
   } else if (command === 'profile') {
     router.push('/')
+  } else if (command === 'admin') {
+    router.push('/admin')
   }
 }
 </script>

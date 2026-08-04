@@ -94,6 +94,19 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    public void toggleStatus(Long id, Integer status) {
+        Job job = jobMapper.selectById(id);
+        if (job == null) {
+            throw new BusinessException(ResultCode.NOT_FOUND, "岗位不存在");
+        }
+        if (status == null || (status != 0 && status != 1)) {
+            throw new BusinessException(ResultCode.PARAM_ERROR, "状态不正确");
+        }
+        job.setStatus(status);
+        jobMapper.updateById(job);
+    }
+
+    @Override
     public Job getEntity(Long id) {
         Job job = jobMapper.selectById(id);
         if (job == null || job.getStatus() == null || job.getStatus() != 1) {

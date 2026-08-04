@@ -18,6 +18,8 @@ public interface JobService {
 
     void delete(Long id);
 
+    void toggleStatus(Long id, Integer status);
+
     /** 供匹配服务使用 */
     Job getEntity(Long id);
 }

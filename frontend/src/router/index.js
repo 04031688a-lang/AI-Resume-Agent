@@ -40,6 +40,16 @@ const routes = [
     component: () => import('@/views/InterviewChatView.vue')
   },
   {
+    path: '/projects',
+    name: 'Projects',
+    component: () => import('@/views/ProjectView.vue')
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('@/views/AdminView.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/'
   }
