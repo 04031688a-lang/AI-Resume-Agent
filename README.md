@@ -74,12 +74,14 @@ mysql -u root -p < docs/sql/seed_jobs.sql
 cd backend
 # 复制配置模板并修改数据库密码等本地配置
 copy src/main/resources/application-example.yml src/main/resources/application-dev.yml
-mvn spring-boot:run
+# 打包并启动（Windows 下建议使用 clean，避免增量构建不刷新配置/代码）
+mvn clean package -DskipTests
+java -jar target/resume-agent-backend-0.1.0.jar
 ```
 
 后端默认运行在 `http://localhost:8080`，API 前缀为 `/api/v1`。
 
-> **AI 分析需要配置 DeepSeek API Key**：在 `backend/src/main/resources/application-dev.yml` 中填写 `deepseek.api-key`，或设置环境变量 `DEEPSEEK_API_KEY`。未配置时，简历分析会返回明确提示，不影响其他功能。
+> **AI 分析需要配置 DeepSeek API Key**：在 `backend/src/main/resources/application-dev.yml` 中填写 `deepseek.api-key`，或设置环境变量 `DEEPSEEK_API_KEY`。未配置时，AI 接口会返回明确提示，不影响其他功能。
 > 也可以登录管理后台后，在「AI 配置」页保存 API Key（存储于数据库 `ai_config` 表，即时生效）。
 
 ### 管理员账号
